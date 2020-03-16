@@ -12,6 +12,8 @@ import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { RegisterModalComponent } from './account/register-modal/register-modal.component';
 import { LoginModalComponent } from './account/login-modal/login-modal.component';
+import { SchedulerComponent } from './scheduler/scheduler.component';
+import { AppointmentComponent } from './appointment/appointment.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,9 @@ import { LoginModalComponent } from './account/login-modal/login-modal.component
     CounterComponent,
     FetchDataComponent,
     RegisterModalComponent,
-    LoginModalComponent
+    LoginModalComponent,
+    SchedulerComponent,
+    AppointmentComponent
   ],
   entryComponents: [
     RegisterModalComponent,
@@ -35,6 +39,8 @@ import { LoginModalComponent } from './account/login-modal/login-modal.component
     NgbModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
+      { path: 'scheduler', component: SchedulerComponent },
+      { path: 'appointment', component: AppointmentComponent },
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
     ])
