@@ -10,6 +10,8 @@ namespace MyHealthPlus.Data.Models
 
         public DateTime Date { get; set; }
 
+        public string Note { get; set; }
+
         // public ICollection<Patient> Patients { get; set; }
     }
 }

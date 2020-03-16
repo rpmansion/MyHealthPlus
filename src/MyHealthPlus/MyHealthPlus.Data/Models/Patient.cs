@@ -12,6 +12,8 @@ namespace MyHealthPlus.Data.Models
 
         public DateTime BirthDate { get; set; }
 
+        public string Contact { get; set; }
+
         public Appointment Appointment { get; set; }
     }
 }

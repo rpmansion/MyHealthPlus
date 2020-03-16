@@ -15,8 +15,14 @@ namespace MyHealthPlus.Web.Controllers
             _logger = logger;
         }
 
-        [HttpPost]
+        [HttpPost("login")]
         public IActionResult Login(LoginDto dto)
+        {
+            return Ok();
+        }
+
+        [HttpPost("register")]
+        public IActionResult Register(RegisterDto dto)
         {
             return Ok();
         }
