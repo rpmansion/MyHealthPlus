@@ -28,7 +28,7 @@ MyHealthPlus.Web/            Application services and User Interface
 ### Installation
 1. Clone the repository
 ```sh
-git clone https://github.com/your_username_/Project-Name.git
+git clone https://github.com/rpmansion/MyHealthPlus.git
 ```
 2. Data Migrations
  - Create Initial Migration
