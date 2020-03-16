@@ -4,11 +4,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
-import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { RegisterModalComponent } from './account/register-modal/register-modal.component';
 import { LoginModalComponent } from './account/login-modal/login-modal.component';
@@ -20,12 +23,11 @@ import { AppointmentComponent } from './appointment/appointment.component';
     AppComponent,
     NavMenuComponent,
     HomeComponent,
-    CounterComponent,
     FetchDataComponent,
-    RegisterModalComponent,
-    LoginModalComponent,
     SchedulerComponent,
-    AppointmentComponent
+    AppointmentComponent,
+    RegisterModalComponent,
+    LoginModalComponent
   ],
   entryComponents: [
     RegisterModalComponent,
@@ -33,15 +35,19 @@ import { AppointmentComponent } from './appointment/appointment.component';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
     NgbModule,
+    CalendarModule.forRoot({
+      provide: DateAdapter,
+      useFactory: adapterFactory
+    }),
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'scheduler', component: SchedulerComponent },
       { path: 'appointment', component: AppointmentComponent },
-      { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
     ])
   ],

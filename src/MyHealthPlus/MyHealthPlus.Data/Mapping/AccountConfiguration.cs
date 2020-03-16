@@ -11,10 +11,10 @@ namespace MyHealthPlus.Data.Mapping
             builder.ToTable("Accounts")
                 .HasKey(x => x.Id);
 
-            builder.Property(x => x.Id)
-                .IsRequired();
+            builder.HasIndex(x => x.UserName)
+                .IsUnique();
 
-            builder.Property(x => x.UserName)
+            builder.Property(x => x.Id)
                 .IsRequired();
 
             builder.Property(x => x.UserName)
