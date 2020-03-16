@@ -4,6 +4,15 @@ A web application that allows patients to register and set checkup appointments;
 
 ![Capture](https://user-images.githubusercontent.com/18090549/76726006-e4344500-678a-11ea-9294-ec1bc0e0d2f1.PNG)
 
+# Project structure
+
+```
+MyHealthPlus.Core/           Framework related codes
+MyHealthPlus.Data/           Domain Models and Persistent services
+MyHealthPlus.Web/            Application services and User Interface
+|- ClientApp/                User Interface (Angular)
+```
+
 ### Built With
 * [Asp.Net Core](https://github.com/dotnet/aspnetcore)
 * [Asp.Net Core Identity](https://github.com/dotnet/aspnetcore/tree/master/src/Identity)
