@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using MyHealthPlus.Web.Extensions;
 
 namespace MyHealthPlus.Web
 {
@@ -7,7 +8,10 @@ namespace MyHealthPlus.Web
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            CreateHostBuilder(args)
+                .Build()
+                .MigrateDatabase()
+                .Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

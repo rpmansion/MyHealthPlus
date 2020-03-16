@@ -8,7 +8,7 @@ namespace MyHealthPlus.Data.Mapping
     {
         public void Configure(EntityTypeBuilder<Role> builder)
         {
-            builder.ToTable("Roles")
+            builder.ToTable(nameof(Role))
                 .HasKey(x => x.Id);
 
             builder.Property(x => x.Id)

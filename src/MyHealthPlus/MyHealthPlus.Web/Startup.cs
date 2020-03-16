@@ -27,7 +27,7 @@ namespace MyHealthPlus.Web
         public void ConfigureServices(IServiceCollection services)
         {
             var connectionString = Configuration.GetConnectionString("MyHealthPlusDb");
-            var migrationsAssembly = typeof(AppDbContext).Assembly.GetName().Name;
+            var migrationsAssembly = typeof(Startup).Assembly.GetName().Name;
 
             services.AddDbContext<AppDbContext>(opts =>
             {

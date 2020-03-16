@@ -8,7 +8,7 @@ namespace MyHealthPlus.Data.Mapping
     {
         public void Configure(EntityTypeBuilder<Account> builder)
         {
-            builder.ToTable("Accounts")
+            builder.ToTable(nameof(Account))
                 .HasKey(x => x.Id);
 
             builder.HasIndex(x => x.UserName)

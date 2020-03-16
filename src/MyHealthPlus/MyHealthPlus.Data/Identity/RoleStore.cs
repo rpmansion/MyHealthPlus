@@ -37,7 +37,7 @@ namespace MyHealthPlus.Data.Identity
             cancellationToken.ThrowIfCancellationRequested();
 
             return await _context.Roles.SingleOrDefaultAsync(x =>
-                x.Name.ToUpper() == normalizedRoleName,
+                x.NormalizedName == normalizedRoleName,
                 cancellationToken
             );
         }
@@ -60,7 +60,7 @@ namespace MyHealthPlus.Data.Identity
             ThrowIfDisposed();
             cancellationToken.ThrowIfCancellationRequested();
 
-            throw new NotImplementedException();
+            return Task.FromResult(role.NormalizedName);
         }
 
         public Task SetNormalizedRoleNameAsync(Role role, string normalizedName, CancellationToken cancellationToken)
@@ -68,7 +68,19 @@ namespace MyHealthPlus.Data.Identity
             ThrowIfDisposed();
             cancellationToken.ThrowIfCancellationRequested();
 
-            throw new NotImplementedException();
+            if (role == null)
+            {
+                throw new ArgumentNullException(nameof(role));
+            }
+
+            if (string.IsNullOrWhiteSpace(normalizedName))
+            {
+                throw new ArgumentNullException(nameof(normalizedName));
+            }
+
+            role.NormalizedName = normalizedName;
+
+            return Task.CompletedTask;
         }
 
         public Task<string> GetRoleNameAsync(Role role, CancellationToken cancellationToken)

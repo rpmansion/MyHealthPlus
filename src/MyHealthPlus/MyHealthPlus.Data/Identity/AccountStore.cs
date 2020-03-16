@@ -53,20 +53,32 @@ namespace MyHealthPlus.Data.Identity
             return Task.FromResult(account.Id.ToString());
         }
 
-        public Task<string> GetNormalizedUserNameAsync(Account user, CancellationToken cancellationToken)
+        public Task<string> GetNormalizedUserNameAsync(Account account, CancellationToken cancellationToken)
         {
             ThrowIfDisposed();
             cancellationToken.ThrowIfCancellationRequested();
 
-            throw new NotImplementedException();
+            return Task.FromResult(account.NormalizedUserName);
         }
 
-        public Task SetNormalizedUserNameAsync(Account user, string normalizedName, CancellationToken cancellationToken)
+        public Task SetNormalizedUserNameAsync(Account account, string normalizedName, CancellationToken cancellationToken)
         {
             ThrowIfDisposed();
             cancellationToken.ThrowIfCancellationRequested();
 
-            throw new NotImplementedException();
+            if (account == null)
+            {
+                throw new ArgumentNullException(nameof(account));
+            }
+
+            if (string.IsNullOrWhiteSpace(normalizedName))
+            {
+                throw new ArgumentNullException(nameof(normalizedName));
+            }
+
+            account.NormalizedUserName = normalizedName;
+
+            return Task.CompletedTask;
         }
 
         public Task<string> GetUserNameAsync(Account account, CancellationToken cancellationToken)
@@ -258,21 +270,21 @@ namespace MyHealthPlus.Data.Identity
 
             var normalizedRole = roleName.ToUpperInvariant();
 
-            var accountRole = account.AccountRoles.SingleOrDefault(x => x.Role.Name.ToUpperInvariant() == normalizedRole);
+            var accountRole = account.AccountRoles.SingleOrDefault(x => x.Role.NormalizedName == normalizedRole);
 
             if (accountRole != null)
             {
                 throw new InvalidOperationException($"Account is already a {roleName}");
             }
 
-            var role = await _context.Roles.SingleOrDefaultAsync(x => x.Name.ToUpperInvariant() == normalizedRole);
+            var role = await _context.Roles.SingleOrDefaultAsync(x => x.NormalizedName == normalizedRole);
 
             if (role == null)
             {
                 throw new InvalidOperationException($"Role {roleName} not found.");
             }
 
-            account.AccountRoles.Add(new AccountRole { Account = account, Role = role });
+            account.AccountRoles.Add(new Account2Role { Account = account, Role = role });
 
             await _context.SaveChangesAsync(cancellationToken);
         }
@@ -327,7 +339,7 @@ namespace MyHealthPlus.Data.Identity
                 throw new ArgumentNullException(nameof(roleName));
             }
 
-            return Task.FromResult(account.AccountRoles.Any(x => x.Role.Name.ToUpperInvariant() == roleName.ToUpperInvariant()));
+            return Task.FromResult(account.AccountRoles.Any(x => x.Role.NormalizedName == roleName.ToUpperInvariant()));
         }
 
         public async Task RemoveFromRoleAsync(Account account, string roleName, CancellationToken cancellationToken)
@@ -346,10 +358,10 @@ namespace MyHealthPlus.Data.Identity
             }
 
             var role = await _context.Roles.SingleOrDefaultAsync(x =>
-                x.Name.ToUpperInvariant() == roleName.ToUpperInvariant()
+                x.NormalizedName == roleName.ToUpperInvariant()
             );
 
-            AccountRole accountRole = null;
+            Account2Role accountRole = null;
 
             if (role != null)
             {

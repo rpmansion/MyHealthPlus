@@ -4,11 +4,11 @@ using MyHealthPlus.Data.Models;
 
 namespace MyHealthPlus.Data.Mapping
 {
-    public class PatientConfiguration : IEntityTypeConfiguration<Patient>
+    public class AccountProfileConfiguration : IEntityTypeConfiguration<AccountProfile>
     {
-        public void Configure(EntityTypeBuilder<Patient> builder)
+        public void Configure(EntityTypeBuilder<AccountProfile> builder)
         {
-            builder.ToTable("Patients")
+            builder.ToTable(nameof(AccountProfile))
                 .HasKey(x => x.Id);
 
             builder.Property(x => x.FirstName)
@@ -16,9 +16,6 @@ namespace MyHealthPlus.Data.Mapping
 
             builder.Property(x => x.LastName)
                 .IsRequired();
-
-            builder.HasOne(x => x.Appointment)
-                   .WithMany();
         }
     }
 }

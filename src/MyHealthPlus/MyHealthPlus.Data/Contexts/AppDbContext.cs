@@ -15,9 +15,9 @@ namespace MyHealthPlus.Data.Contexts
 
         public DbSet<Role> Roles { get; set; }
 
-        public DbSet<AccountRole> AccountRoles { get; set; }
+        public DbSet<Account2Role> AccountRoles { get; set; }
 
-        public DbSet<Patient> Patients { get; set; }
+        public DbSet<AccountProfile> Patients { get; set; }
 
         public DbSet<Appointment> Appointments { get; set; }
 

@@ -1,8 +1,9 @@
 ﻿using System;
+using MyHealthPlus.Data.Enums;
 
 namespace MyHealthPlus.Data.Models
 {
-    public class Patient : EntityBase
+    public class AccountProfile : EntityBase
     {
         public string FirstName { get; set; }
 
@@ -14,6 +15,8 @@ namespace MyHealthPlus.Data.Models
 
         public string Contact { get; set; }
 
-        public Appointment Appointment { get; set; }
+        public SexType SexType  { get; set; }
+
+        public Account Account { get; set; }
     }
 }

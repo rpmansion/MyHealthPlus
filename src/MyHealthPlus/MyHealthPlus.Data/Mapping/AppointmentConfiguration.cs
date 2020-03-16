@@ -8,7 +8,7 @@ namespace MyHealthPlus.Data.Mapping
     {
         public void Configure(EntityTypeBuilder<Appointment> builder)
         {
-            builder.ToTable("Appointments")
+            builder.ToTable(nameof(Appointment))
                 .HasKey(x => x.Id);
 
             builder.Property(x => x.Id)
