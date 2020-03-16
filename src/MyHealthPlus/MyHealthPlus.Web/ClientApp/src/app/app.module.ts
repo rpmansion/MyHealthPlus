@@ -10,8 +10,8 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
-import { RegisterModalComponent } from './home/modals/register/register-modal.component';
-import { LoginModalComponent } from './home/modals/login/login-modal.component';
+import { RegisterModalComponent } from './account/register-modal/register-modal.component';
+import { LoginModalComponent } from './account/login-modal/login-modal.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +24,8 @@ import { LoginModalComponent } from './home/modals/login/login-modal.component';
     LoginModalComponent
   ],
   entryComponents: [
-    RegisterModalComponent
+    RegisterModalComponent,
+    LoginModalComponent
   ],
   imports: [
     BrowserModule,

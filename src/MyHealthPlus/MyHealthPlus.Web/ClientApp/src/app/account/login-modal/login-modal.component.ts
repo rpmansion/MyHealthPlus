@@ -8,7 +8,6 @@ import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
   styleUrls: ['./login-modal.component.scss']
 })
 export class LoginModalComponent implements OnInit {
-
   loginForm: FormGroup;
   constructor(public activeModal: NgbActiveModal,
     private formBuilder: FormBuilder) { }
@@ -19,12 +18,8 @@ export class LoginModalComponent implements OnInit {
 
   private createForm() {
     this.loginForm = this.formBuilder.group({
-      firstName: '',
-      lastName: '',
-      middleName: '',
-      birthDate: '',
-      email: '',
-      contact: ''
+      username: '',
+      password: ''
     });
   }
   private submitForm() {
@@ -35,5 +30,4 @@ export class LoginModalComponent implements OnInit {
   closeModal() {
     this.activeModal.close('Modal Closed');
   }
-
 }

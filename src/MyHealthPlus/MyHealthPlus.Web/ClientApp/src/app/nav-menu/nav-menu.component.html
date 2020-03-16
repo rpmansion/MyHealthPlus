@@ -12,35 +12,10 @@
             <a class="nav-link text-dark" [routerLink]="['/']">Home</a>
           </li>
           <li class="nav-item" [routerLinkActive]="['link-active']">
-            <a class="nav-link text-dark" (click)="open(content)">Login</a>
+            <a class="nav-link text-dark" (click)="openLoginModel()">Login</a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
 </header>
-
-
-<ng-template #content let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Login</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <form>
-      <div class="form-group">
-        <label for="userName">Username</label>
-        <input id="userName" class="form-control" type="text" />
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input id="password" class="form-control" type="password">
-      </div>
-    </form>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-primary btn-block" (click)="modal.close('Save click')">Login</button>
-  </div>
-</ng-template>
