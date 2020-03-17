@@ -11,10 +11,10 @@ namespace MyHealthPlus.Data.Models
 
         public DateTime Date { get; set; }
 
-        public DateTime StartTime { get; set; }
-
-        public DateTime EndTime { get; set; }
+        public DateTime Time { get; set; }
 
         public string Note { get; set; }
+
+        public AppointmentStatus Status { get; set; }
     }
 }

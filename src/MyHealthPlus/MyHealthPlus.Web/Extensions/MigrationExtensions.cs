@@ -140,17 +140,18 @@ namespace MyHealthPlus.Web.Extensions
                     foreach (var account in accounts)
                     {
                         var exist = context.Appointments
-                            .FirstOrDefault(x => x.Account == account
-                                                 && x.Date.Date == DateTime.Now.Date);
+                            .FirstOrDefaultAsync(x => x.Account == account
+                                   && x.Date.Date == DateTime.Now.Date);
 
+                        var hoursCounter = 8;
+                        
                         if (exist == null)
                         {
                             var appointment = new Appointment
                             {
                                 CheckupType = CheckupType.General,
                                 Date = DateTime.Now,
-                                StartTime = DateTime.Now.AddHours(8),
-                                EndTime = DateTime.Now.AddHours(9),
+                                Time = DateTime.Now.AddHours(hoursCounter++),
                                 Account = account
                             };
 

@@ -69,12 +69,11 @@ namespace MyHealthPlus.Web.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    AccountId = table.Column<int>(nullable: true),
                     CheckupType = table.Column<int>(nullable: false),
                     Date = table.Column<DateTime>(nullable: false),
-                    StartTime = table.Column<DateTime>(nullable: false),
-                    EndTime = table.Column<DateTime>(nullable: false),
-                    Note = table.Column<string>(nullable: true),
-                    AccountId = table.Column<int>(nullable: true)
+                    Time = table.Column<DateTime>(nullable: false),
+                    Note = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

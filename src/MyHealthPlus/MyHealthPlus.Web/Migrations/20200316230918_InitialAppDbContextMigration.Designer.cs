@@ -10,7 +10,7 @@ using MyHealthPlus.Data.Contexts;
 namespace MyHealthPlus.Web.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20200316200912_InitialAppDbContextMigration")]
+    [Migration("20200316230918_InitialAppDbContextMigration")]
     partial class InitialAppDbContextMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -126,13 +126,10 @@ namespace MyHealthPlus.Web.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("StartTime")
+                    b.Property<DateTime>("Time")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
