@@ -60,7 +60,7 @@
     <div class="card-body">
       <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h3>
       <mwl-calendar-month-view [viewDate]="viewDate" [events]="events" [refresh]="refresh"
-        [activeDayIsOpen]="activeDayIsOpen" (eventTimesChanged)="eventTimesChanged($event)">
+       (dayClicked)="dayClicked($event.day)">
       </mwl-calendar-month-view>
     </div>
   </div>

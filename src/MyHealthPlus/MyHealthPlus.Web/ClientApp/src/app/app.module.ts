@@ -16,6 +16,7 @@ import { RegisterModalComponent } from './account/register-modal/register-modal.
 import { LoginModalComponent } from './account/login-modal/login-modal.component';
 import { SchedulerComponent } from './scheduler/scheduler.component';
 import { AppointmentComponent } from './appointment/appointment.component';
+import { ScheduledModalComponent } from './scheduler/scheduled-modal/scheduled-modal.component';
 
 @NgModule({
   declarations: [
@@ -25,11 +26,13 @@ import { AppointmentComponent } from './appointment/appointment.component';
     SchedulerComponent,
     AppointmentComponent,
     RegisterModalComponent,
-    LoginModalComponent
+    LoginModalComponent,
+    ScheduledModalComponent
   ],
   entryComponents: [
     RegisterModalComponent,
-    LoginModalComponent
+    LoginModalComponent,
+    ScheduledModalComponent
   ],
   imports: [
     BrowserModule,

@@ -41,6 +41,19 @@ namespace MyHealthPlus.Web.Controllers
             return Ok(appointments);
         }
 
+        [HttpGet("patients")]
+        public async Task<IActionResult> GetCurrentToEndDate()
+        {
+            var appointments = _appDbContext.Appointments
+                .Where(x => x.Date.Date == DateTime.UtcNow.Date)
+                .Include(x => x.Account);
+
+
+            var list = await appointments.ToListAsync();
+
+            return Ok(list);
+        }
+
         [HttpGet("admin/{adminId}")]
         public async Task<IActionResult> GetByAdmin(int adminId)
         {
