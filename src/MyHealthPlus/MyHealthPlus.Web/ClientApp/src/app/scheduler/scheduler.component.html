@@ -7,52 +7,62 @@
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">Schedule an appointment</h5>
-        <form>
+        <form [formGroup]="form" (ngSubmit)="handleFormSubmit(form.value)">
+          <div class="form-group">
+            <label for="checkupType">Choose Checkup</label>
+            <select id="checkupType" formControlName="checkupType" class="form-control">
+              <option selected>Please select...</option>
+              <option *ngFor="let option of getCheckupType()" [value]="option.id">
+                {{option.name}}
+              </option>
+            </select>
+          </div>
           <div class="row">
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="checkupType">Choose Checkup</label>
-                <select id="checkupType" class="form-control">
-                  <option selected>Choose...</option>
-                  <option>General</option>
-                  <option>Skin Cancer</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="appointmentDate">Date of Appointment</label>
-                <div class="input-group">
-                  <input id="appointmentDate" class="form-control" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker
-                    #dp="ngbDatepicker">
-                  <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" (click)="dp.toggle()" type="button">
-                      <i class="fas fa-calendar-alt"></i>
-                    </button>
-                  </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="appointmentDate">Date of Appointment</label>
+              <div class="input-group">
+                <input id="appointmentDate" class="form-control" placeholder="yyyy-mm-dd" name="dp" ngbDatepicker
+                  #dp="ngbDatepicker">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" (click)="dp.toggle()" type="button">
+                    <i class="fas fa-calendar-alt"></i>
+                  </button>
                 </div>
               </div>
             </div>
           </div>
-
-          <div class="form-group">
-            <label for="note">Note</label>
-            <textarea class="form-control" id="note" rows="3"></textarea>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="appointmentTime">Time of Appointment</label>
+              <select id="appointmentTime" formControlName="appointmentTime" class="form-control">
+                <option selected>Please select...</option>
+                <option *ngFor="let option of getListOfTime()" [value]="option.id">
+                  {{option.name}}
+                </option>
+              </select>
+            </div>
           </div>
-          <button class="btn btn-primary">Save</button>
-        </form>
       </div>
+      <div class="form-group">
+        <label for="note">Note</label>
+        <textarea class="form-control" formControlName="note" id="note" rows="3"></textarea>
+      </div>
+      <button class="btn btn-success btn-block" [disabled]="!form.valid">
+        Save
+      </button>
+      </form>
     </div>
   </div>
-  <div class="col-md-6">
-    <div class="card">
-      <div class="card-body">
-        <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h3>
-        <mwl-calendar-month-view  [viewDate]="viewDate" [events]="events"
-          [refresh]="refresh" [activeDayIsOpen]="activeDayIsOpen"
-           (eventTimesChanged)="eventTimesChanged($event)">
-        </mwl-calendar-month-view>
-      </div>
+</div>
+<div class="col-md-6">
+  <div class="card">
+    <div class="card-body">
+      <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h3>
+      <mwl-calendar-month-view [viewDate]="viewDate" [events]="events" [refresh]="refresh"
+        [activeDayIsOpen]="activeDayIsOpen" (eventTimesChanged)="eventTimesChanged($event)">
+      </mwl-calendar-month-view>
     </div>
   </div>
+</div>
 </div>

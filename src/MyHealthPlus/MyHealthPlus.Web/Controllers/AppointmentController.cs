@@ -38,7 +38,7 @@ namespace MyHealthPlus.Web.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create(AppointmentModel model)
+        public async Task<IActionResult> Create([FromBody]AppointmentModel model)
         {
             var appointment = new Appointment
             {

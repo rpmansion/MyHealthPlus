@@ -4,4 +4,9 @@
     <TargetFrameworks>netstandard2.1;netcoreapp3.1</TargetFrameworks>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="System.Text.Json" Version="4.7.1" />
+  </ItemGroup>
+
 </Project>

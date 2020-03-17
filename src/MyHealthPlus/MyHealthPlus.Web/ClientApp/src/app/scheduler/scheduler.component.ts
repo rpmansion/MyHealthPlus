@@ -1,10 +1,14 @@
-import { Component, OnInit, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ViewEncapsulation, Inject } from '@angular/core';
 
 import {
   CalendarEvent,
   CalendarMonthViewBeforeRenderEvent,
   CalendarView
 } from 'angular-calendar';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { format, addHours, startOfDay } from 'date-fns';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-scheduler',
@@ -18,9 +22,39 @@ export class SchedulerComponent implements OnInit {
   viewDate: Date = new Date();
   events: CalendarEvent[] = [];
 
-  constructor() { }
+  form: FormGroup;
 
-  ngOnInit() {
+  constructor(private http: HttpClient,
+    private formBuilder: FormBuilder,
+    @Inject('BASE_URL') private baseUrl: string) { }
+
+    ngOnInit() {
+      this.createForm();
+    }
+
+    private createForm() {
+      this.form = this.formBuilder.group({
+        checkupType: '',
+        appointmentDate: '',
+        appointmentTime: '',
+        note: ''
+      });
+    }
+
+  getListOfTime() {
+    const times: {id: string, name: string}[] = [];
+    for (let index = 8; index < 18; index++) {
+      const name = format(addHours(startOfDay(new Date()), index), 'hh:mm a');
+      times.push({id: index.toString(), name: name });
+    }
+    return times;
+  }
+
+  getCheckupType() {
+    return [
+      {id: '1', name: 'General' },
+      {id: '2', name: 'Skin Cancer'}
+    ];
   }
 
   beforeMonthViewRender(renderEvent: CalendarMonthViewBeforeRenderEvent): void {
@@ -30,6 +64,30 @@ export class SchedulerComponent implements OnInit {
         day.cssClass = 'bg-pink';
       }
     });
+  }
+
+  handleFormSubmit(data: any) {
+    // const formData = JSON.stringify(data.serializeArray());
+    // console.log(formData);
+    // const formData = new FormData();
+    // // tslint:disable-next-line: forin
+    // for (const key in data) {
+    //   formData.append(key, data[key]);
+    // }
+    // console.log(formData);
+    console.log(data);
+    this.createAppointment(data).subscribe(
+      response => {
+        console.log(response);
+      }
+    );
+  }
+
+  createAppointment(data: any): Observable<any> {
+    const headerOptions = new HttpHeaders();
+    headerOptions.set('Content-Type', 'application/json');
+    return this.http.post<any>(`${this.baseUrl}api/appointment/create`, data, {headers: headerOptions});
+    // return this.http.post<any>(`${this.baseUrl}api/appointment/create`, data)
   }
 
 }
