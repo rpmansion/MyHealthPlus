@@ -1,0 +1,41 @@
+<h1>Welcome Robert!</h1>
+<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Corporis, ipsum. Alias facilis voluptates minima possimus
+  similique aperiam incidunt, consectetur, adipisci ea harum sequi non inventore rerum blanditiis labore. Obcaecati,
+  ratione?</p>
+<div class="row">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Today's Appointment</h5>
+        <mwl-calendar-day-view [viewDate]="viewDate"
+          [dayStartHour]="8" [dayEndHour]="17"
+          [events]="events" (beforeViewRender)="beforeDayViewRender($event)">
+        </mwl-calendar-day-view>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Patient Information</h5>
+        <div class="card mb-3" style="max-width: 540px;">
+          <div class="row no-gutters">
+            <div class="col-md-4">
+              <img src="../../assets/images/avatar.png" class="card-img" alt="profile-image">
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title">John Doe</h5>
+                <p class="card-text">Birth Date: Nov. 07, 1990</p>
+                <p class="card-text">Contact: +639054444301</p>
+                <p class="card-text">Checkup: General</p>
+                <p class="card-text">Time: 10PM - 11PM</p>
+                <a href="#" class="btn btn-primary">Complete</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

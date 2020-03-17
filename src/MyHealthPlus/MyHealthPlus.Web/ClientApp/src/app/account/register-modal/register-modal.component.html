@@ -1,0 +1,59 @@
+<div class="modal-header">
+  <h4 class="modal-title">Register</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form [formGroup]="form" (ngSubmit)="handleFormSubmit(form.value)">
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input id="firstName" formControlName="firstName" class="form-control" type="text" />
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input id="lastName" class="form-control" formControlName="lastName" type="text">
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="middleName">Middle Name</label>
+          <input id="middleName" class="form-control" formControlName="middleName" type="text" />
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="birthDate">Date of Birth</label>
+          <div class="input-group">
+            <input id="birthDate" class="form-control" formControlName="birthDate" placeholder="yyyy-mm-dd" name="dp"
+              ngbDatepicker #dp="ngbDatepicker">
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" (click)="dp.toggle()" type="button">
+                <i class="fas fa-calendar-alt"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input id="email" class="form-control" formControlName="email" type="email" />
+    </div>
+    <div class="form-group">
+      <label for="contact">Contact Number</label>
+      <input id="contact" class="form-control" formControlName="contact" type="tel" />
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-success btn-block" [disabled]="!form.valid">
+      Register
+    </button>
+  </div>
+</form>
