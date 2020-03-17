@@ -12,7 +12,6 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { RegisterModalComponent } from './account/register-modal/register-modal.component';
 import { LoginModalComponent } from './account/login-modal/login-modal.component';
 import { SchedulerComponent } from './scheduler/scheduler.component';
@@ -23,7 +22,6 @@ import { AppointmentComponent } from './appointment/appointment.component';
     AppComponent,
     NavMenuComponent,
     HomeComponent,
-    FetchDataComponent,
     SchedulerComponent,
     AppointmentComponent,
     RegisterModalComponent,
@@ -47,8 +45,7 @@ import { AppointmentComponent } from './appointment/appointment.component';
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'scheduler', component: SchedulerComponent },
-      { path: 'appointment', component: AppointmentComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
+      { path: 'appointment', component: AppointmentComponent }
     ])
   ],
   providers: [],

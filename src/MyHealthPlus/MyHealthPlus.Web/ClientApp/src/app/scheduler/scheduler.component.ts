@@ -67,15 +67,6 @@ export class SchedulerComponent implements OnInit {
   }
 
   handleFormSubmit(data: any) {
-    // const formData = JSON.stringify(data.serializeArray());
-    // console.log(formData);
-    // const formData = new FormData();
-    // // tslint:disable-next-line: forin
-    // for (const key in data) {
-    //   formData.append(key, data[key]);
-    // }
-    // console.log(formData);
-    console.log(data);
     this.createAppointment(data).subscribe(
       response => {
         console.log(response);
@@ -83,10 +74,11 @@ export class SchedulerComponent implements OnInit {
     );
   }
 
+  // TODO : move this to service
   createAppointment(data: any): Observable<any> {
     const headerOptions = new HttpHeaders();
     headerOptions.set('Content-Type', 'application/json');
-    return this.http.post<any>(`${this.baseUrl}api/appointment/create`, data, {headers: headerOptions});
+    return this.http.post<any>(`${this.baseUrl}api/appointment/create`, data);
     // return this.http.post<any>(`${this.baseUrl}api/appointment/create`, data)
   }
 

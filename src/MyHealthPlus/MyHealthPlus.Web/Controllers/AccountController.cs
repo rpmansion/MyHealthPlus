@@ -22,13 +22,13 @@ namespace MyHealthPlus.Web.Controllers
         }
 
         [HttpPost("login")]
-        public IActionResult Login(LoginModel model)
+        public IActionResult Login([FromBody]LoginModel model)
         {
             return Ok();
         }
 
         [HttpPost("register")]
-        public IActionResult Register(RegisterModel model)
+        public IActionResult Register([FromBody]RegisterModel model)
         {
             return Ok();
         }

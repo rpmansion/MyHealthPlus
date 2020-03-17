@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-login-modal',
@@ -8,8 +10,12 @@ import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
   styleUrls: ['./login-modal.component.scss']
 })
 export class LoginModalComponent implements OnInit {
-  loginForm: FormGroup;
-  constructor(public activeModal: NgbActiveModal,
+  form: FormGroup;
+
+  constructor(
+    private http: HttpClient,
+    private activeModal: NgbActiveModal,
+    @Inject('BASE_URL') private baseUrl: string,
     private formBuilder: FormBuilder) { }
 
   ngOnInit() {
@@ -17,17 +23,27 @@ export class LoginModalComponent implements OnInit {
   }
 
   private createForm() {
-    this.loginForm = this.formBuilder.group({
-      username: '',
-      password: ''
+    this.form = this.formBuilder.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required]
     });
   }
-  private submitForm() {
-    // TODO : Call an API to login
-    this.activeModal.close(this.loginForm.value);
+
+  handleFormSubmit(data: any) {
+    this.login(data).subscribe(
+      response => {
+        console.log(response);
+        // this.activeModal.close();
+      }
+    );
   }
 
   closeModal() {
     this.activeModal.close('Modal Closed');
+  }
+
+  // TODO : move this to service
+  login(data: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}api/account/login`, data);
   }
 }
