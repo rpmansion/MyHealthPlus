@@ -11,6 +11,7 @@ MyHealthPlus.Core/           Framework related codes
 MyHealthPlus.Data/           Domain Models and Persistent services
 MyHealthPlus.Web/            Application services and User Interface
 |- ClientApp/                User Interface (Angular)
+|+ ...
 ```
 
 ### Built With
