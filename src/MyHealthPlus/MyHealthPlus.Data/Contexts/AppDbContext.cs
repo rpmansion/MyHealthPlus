@@ -13,11 +13,11 @@ namespace MyHealthPlus.Data.Contexts
 
         public DbSet<Account> Accounts { get; set; }
 
+        public DbSet<AccountClaim> AccountClaims { get; set; }
+
         public DbSet<Role> Roles { get; set; }
 
         public DbSet<Account2Role> AccountRoles { get; set; }
-
-        public DbSet<AccountProfile> Patients { get; set; }
 
         public DbSet<Appointment> Appointments { get; set; }
 

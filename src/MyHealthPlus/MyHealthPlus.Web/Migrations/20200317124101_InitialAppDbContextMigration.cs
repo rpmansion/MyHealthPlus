@@ -39,24 +39,20 @@ namespace MyHealthPlus.Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AccountProfile",
+                name: "AccountClaim",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(nullable: false),
-                    LastName = table.Column<string>(nullable: false),
-                    MiddleName = table.Column<string>(nullable: true),
-                    BirthDate = table.Column<DateTime>(nullable: false),
-                    Contact = table.Column<string>(nullable: true),
-                    SexType = table.Column<int>(nullable: false),
-                    AccountId = table.Column<int>(nullable: true)
+                    AccountId = table.Column<int>(nullable: true),
+                    Type = table.Column<string>(nullable: false),
+                    Value = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AccountProfile", x => x.Id);
+                    table.PrimaryKey("PK_AccountClaim", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AccountProfile_Account_AccountId",
+                        name: "FK_AccountClaim_Account_AccountId",
                         column: x => x.AccountId,
                         principalTable: "Account",
                         principalColumn: "Id",
@@ -71,6 +67,7 @@ namespace MyHealthPlus.Web.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AccountId = table.Column<int>(nullable: true),
                     CheckupType = table.Column<int>(nullable: false),
+                    Status = table.Column<int>(nullable: false),
                     Date = table.Column<DateTime>(nullable: false),
                     Time = table.Column<DateTime>(nullable: false),
                     Note = table.Column<string>(nullable: true)
@@ -129,8 +126,8 @@ namespace MyHealthPlus.Web.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AccountProfile_AccountId",
-                table: "AccountProfile",
+                name: "IX_AccountClaim_AccountId",
+                table: "AccountClaim",
                 column: "AccountId");
 
             migrationBuilder.CreateIndex(
@@ -145,7 +142,7 @@ namespace MyHealthPlus.Web.Migrations
                 name: "Account2Role");
 
             migrationBuilder.DropTable(
-                name: "AccountProfile");
+                name: "AccountClaim");
 
             migrationBuilder.DropTable(
                 name: "Appointment");

@@ -2,7 +2,8 @@ import {
   Component,
   ChangeDetectionStrategy,
   ViewEncapsulation,
-  OnInit
+  OnInit,
+  Inject
 } from '@angular/core';
 
 import {
@@ -10,16 +11,31 @@ import {
   CalendarMonthViewBeforeRenderEvent,
   CalendarWeekViewBeforeRenderEvent,
   CalendarDayViewBeforeRenderEvent,
-  CalendarView
+  CalendarView,
+  CalendarEventAction
 } from 'angular-calendar';
 
 import {
   startOfDay,
-  subDays,
-  addDays,
-  endOfMonth,
   addHours
 } from 'date-fns';
+import { Observable, Subject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+
+const colors: any = {
+  red: {
+    primary: '#ad2121',
+    secondary: '#FAE3E3'
+  },
+  blue: {
+    primary: '#1e90ff',
+    secondary: '#D1E8FF'
+  },
+  yellow: {
+    primary: '#e3bc08',
+    secondary: '#FDF1BA'
+  }
+};
 
 @Component({
   selector: 'app-appointment',
@@ -29,49 +45,72 @@ import {
   styleUrls: ['./appointment.component.scss']
 })
 export class AppointmentComponent implements OnInit {
+  viewDate: Date = new Date();
   view: CalendarView = CalendarView.Day;
 
-  viewDate: Date = new Date();
+  refresh: Subject<any> = new Subject();
 
-  events: CalendarEvent[] = [
+  events: CalendarEvent[] = [];
+  actions: CalendarEventAction[] = [
     {
-      start: addHours(startOfDay(new Date()), 8),
-      end: addHours(startOfDay(new Date()), 9),
-      title: 'A draggable and resizable event',
-      // color: colors.yellow,
-      // actions: this.actions
-    },
-    {
-      start: addHours(startOfDay(new Date()), 9),
-      end: addHours(startOfDay(new Date()), 10),
-      title: 'A draggable and resizable event',
-      // color: colors.yellow,
-      // actions: this.actions
-    },
-    {
-      start: addHours(startOfDay(new Date()), 10),
-      end: addHours(startOfDay(new Date()), 11),
-      title: 'A draggable and resizable event',
-      // color: colors.yellow,
-      // actions: this.actions
+      label: '<i class="fa fa-fw fa-times"></i>',
+      a11yLabel: 'Edit',
+      onClick: ({ event }: { event: CalendarEvent }): void => {
+        this.handleCalendarClickEvent('Edited', event);
+        console.log('went here');
+      }
     }
   ];
 
-  constructor() { }
+  constructor(private http: HttpClient,
+    @Inject('BASE_URL') private baseUrl: string) { }
 
   ngOnInit() {
+    this.getDoctorAppointments(1).subscribe(
+      response => {
+        console.log(response);
+        response.forEach(item => {
+          this.events.push({
+            start: this.getStartHour(item.date, item.time),
+            title: this.getTitle(item.checkupType, 'Robert Mansion'),
+            color: colors.yellow,
+            actions: this.actions
+          });
+          this.refresh.next();
+        });
+      }
+    );
   }
 
-  beforeDayViewRender(renderEvent: CalendarDayViewBeforeRenderEvent) {
-    renderEvent.hourColumns.forEach(hourColumn => {
-      hourColumn.hours.forEach(hour => {
-        hour.segments.forEach(segment => {
-          if (segment.date.getHours() >= 2 && segment.date.getHours() <= 5) {
-            segment.cssClass = 'bg-pink';
-          }
-        });
-      });
-    });
+  getStartHour(date: any, time: any) {
+    const day = startOfDay(new Date(date));
+    const hour = new Date(time).getUTCHours();
+
+    return addHours(day, hour);
+  }
+
+  getTitle(id: number, name: string) {
+    return `<b>${this.getCheckupTypeName(id)}:</b> ${name}`;
+  }
+
+  getCheckupTypeName(id: number) {
+    switch (id) {
+      case 1:
+        return 'General Checkup';
+      case 2:
+        return 'Skin Cancer Checkup';
+    }
+  }
+
+  handleCalendarClickEvent(action: string, event: CalendarEvent): void {
+    console.log(action, event);
+    // this.modalData = { event, action };
+    // this.modal.open(this.modalContent, { size: 'lg' });
+  }
+
+  // TODO : move this to service
+  getDoctorAppointments(data: any): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}api/appointment/doctor/${data}`, data);
   }
 
 }

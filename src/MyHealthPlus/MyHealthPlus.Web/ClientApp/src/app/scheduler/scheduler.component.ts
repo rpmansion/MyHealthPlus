@@ -76,10 +76,7 @@ export class SchedulerComponent implements OnInit {
 
   // TODO : move this to service
   createAppointment(data: any): Observable<any> {
-    const headerOptions = new HttpHeaders();
-    headerOptions.set('Content-Type', 'application/json');
     return this.http.post<any>(`${this.baseUrl}api/appointment/create`, data);
-    // return this.http.post<any>(`${this.baseUrl}api/appointment/create`, data)
   }
 
 }
