@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using MyHealthPlus.Core.Extensions;
+using MyHealthPlus.Core.Extensions.Dates;
 using MyHealthPlus.Data.Contexts;
 using MyHealthPlus.Data.Enums;
 using MyHealthPlus.Data.Models;
@@ -19,97 +21,129 @@ namespace MyHealthPlus.Web.Controllers
     public class AppointmentController : ControllerBase
     {
         private readonly UserManager<Account> _userManager;
+        private readonly SignInManager<Account> _signInManager;
         private readonly AppDbContext _appDbContext;
         private readonly ILogger<AppointmentController> _logger;
 
         public AppointmentController(
-            UserManager<Account> userManager,
             AppDbContext appDbContext,
+            UserManager<Account> userManager,
+            SignInManager<Account> signInManager,
             ILogger<AppointmentController> logger)
         {
             _logger = logger;
             _userManager = userManager;
             _appDbContext = appDbContext;
+            _signInManager = signInManager;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetByDate(DateTime date)
         {
-            var appointments = await _appDbContext.Appointments
-                .Where(x => x.Date.Date == date.Date)
-                .ToListAsync();
-
-
-            return Ok(appointments);
-        }
-
-        [HttpGet("patients")]
-        public async Task<IActionResult> GetCurrentToEndDate()
-        {
             var appointments = _appDbContext.Appointments
-                .Where(x => x.Date.Date == DateTime.UtcNow.Date)
-                .Include(x => x.Account);
-
+                .Where(x => x.Date.Date == date.Date);
 
             var list = await appointments.ToListAsync();
 
             return Ok(list);
         }
 
-        [HttpGet("admin/{adminId}")]
-        public async Task<IActionResult> GetByAdmin(int adminId)
+        [HttpGet("current-month")]
+        public async Task<IActionResult> GetCurrentMonth()
         {
-            if (User.IsInRole("Admin"))
-            {
-                return Ok();
-            }
+            var dateUtcNow = DateTime.UtcNow;
+            var dateRange = new DateTimeRange(dateUtcNow.StartOfMonth(), dateUtcNow.EndOfMonth());
 
-            return Unauthorized();
+            var appointments = await _appDbContext.Appointments.ToListAsync();
+
+            var list = appointments
+                .Where(x => dateRange.Includes(x.Date))
+                .ToList();
+
+            return Ok(list);
         }
 
 
         [HttpGet("doctor/{doctorId}")]
         public async Task<IActionResult> GetByDoctor(int doctorId)
         {
-            var appointments = _appDbContext.Appointments
-                .Where(x => x.Date.Date == DateTime.UtcNow.Date)
-                .Include(x => x.Account);
+            var account = await _userManager.GetUserAsync(User);
+            var isDoctor = await _userManager.IsInRoleAsync(account, "Doctor");
+
+            if (isDoctor)
+            {
+                var appointments = _appDbContext.Appointments
+                    .Where(x => x.Date.Date == DateTime.UtcNow.Date)
+                    .Include(x => x.Account);
 
 
-            var list = await appointments.ToListAsync();
+                var list = await appointments.ToListAsync();
 
-            return Ok(list);
+                return Ok(list);
+            }
+
+            return Unauthorized("You have no permission to access this resource.");
         }
 
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody]AppointmentModel model)
         {
-            // var account = _userManager.FindByNameAsync(User.Identity.Name);
-
-            var appointment = new Appointment
+            if (!ModelState.IsValid)
             {
-                CheckupType = model.CheckupType,
-                Date = model.AppointmentDate,
-                Time = model.AppoinmentTime,
-                Note = model.Note
-            };
+                return BadRequest(ModelState);
+            }
 
-            _appDbContext.Appointments.Add(appointment);
-            await _appDbContext.SaveChangesAsync();
+            var account = await _userManager.GetUserAsync(User);
+            var isPatient = await _userManager.IsInRoleAsync(account, "Doctor");
 
-            return Ok();
+            if (isPatient)
+            {
+                var appointments = await _appDbContext.Appointments
+                    .Where(x => x.Date.Date == model.AppointmentDate.Date
+                        && x.Time.Hour == model.AppoinmentTime.Hour).ToListAsync();
+
+                if (appointments.IsNotNullOrEmpty())
+                {
+                    var appointment = new Appointment
+                    {
+                        Status = AppointmentStatus.Pending,
+                        CheckupType = model.CheckupType,
+                        Date = model.AppointmentDate,
+                        Time = model.AppoinmentTime,
+                        Note = model.Note,
+                        Account = account
+                    };
+
+                    _appDbContext.Appointments.Add(appointment);
+                    await _appDbContext.SaveChangesAsync();
+
+                    return Ok("Successfully created an appointment.");
+                }
+
+                return BadRequest("Appointment has already been created.");
+            }
+
+            return Unauthorized("You have no permission to access this resource.");
         }
 
         [HttpPut("update-status")]
         public async Task<IActionResult> UpdateStatus(int appointmentId, AppointmentStatus status)
         {
-            var appointment = await _appDbContext.Appointments
-                .FirstOrDefaultAsync(x => x.Id == appointmentId);
+            var account = await _userManager.GetUserAsync(User);
+            var isDoctor = await _userManager.IsInRoleAsync(account, "Doctor");
 
-            appointment.Status = status;
-            await _appDbContext.SaveChangesAsync();
+            if (isDoctor)
+            {
+                var appointment = await _appDbContext.Appointments
+                    .FirstOrDefaultAsync(x => x.Id == appointmentId);
 
-            return Ok();
+                appointment.Status = status;
+                await _appDbContext.SaveChangesAsync();
+
+                return Ok("Successfully updated the appointment status.");
+            }
+
+            return Unauthorized("You have no permission to access this resource.");
         }
     }
 }

@@ -138,7 +138,6 @@ namespace MyHealthPlus.Web.Extensions
                         new Claim(JwtClaimTypes.GivenName, account.FirstName),
                         new Claim(JwtClaimTypes.FamilyName, account.LastName),
                         new Claim(JwtClaimTypes.Email, account.UserName),
-                        new Claim(JwtClaimTypes.Role, account.Role),
                         new Claim(JwtClaimTypes.PhoneNumber, account.Contact) 
                     }).Result;
 

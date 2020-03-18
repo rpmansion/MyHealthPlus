@@ -16,6 +16,7 @@ export class NavMenuComponent implements OnInit {
 
   ngOnInit() {
     this.isAuthenticated = this.authorizeService.isAuthenticated();
+    // console.log(this.authorizeService);
   }
 
   collapse() {
