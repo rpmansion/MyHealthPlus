@@ -56,7 +56,6 @@ namespace MyHealthPlus.Web.Controllers
                 new Claim(JwtClaimTypes.GivenName, model.FirstName),
                 new Claim(JwtClaimTypes.FamilyName, model.LastName),
                 new Claim(JwtClaimTypes.Email, model.Email),
-                new Claim(JwtClaimTypes.Role, "Patient"),
                 new Claim(JwtClaimTypes.PhoneNumber, "")
             });
 

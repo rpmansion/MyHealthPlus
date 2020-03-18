@@ -1,3 +1,5 @@
+using IdentityServer4.AspNetIdentity;
+using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using MyHealthPlus.Data.Contexts;
 using MyHealthPlus.Data.Identity;
 using MyHealthPlus.Data.Models;
+using MyHealthPlus.Web.Services;
 using Newtonsoft.Json;
 
 namespace MyHealthPlus.Web
@@ -62,6 +65,8 @@ namespace MyHealthPlus.Web
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            services.AddScoped<IProfileService, ProfileService>();
         }
 
         public void Configure(IApplicationBuilder app)

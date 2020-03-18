@@ -127,7 +127,7 @@ export class SchedulerComponent implements OnInit {
 
   // TODO : move this to service
   getPatientAppointments(data: any): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}api/appointment/patients`);
+    return this.http.get<any>(`${this.baseUrl}api/appointment/current-month`);
   }
 
   // TODO : move this to service

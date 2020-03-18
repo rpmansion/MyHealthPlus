@@ -74,7 +74,8 @@ export class AuthorizeService {
     let user: User = null;
     try {
       user = await this.userManager.signinSilent(this.createArguments());
-      this.userSubject.next(user.profile);
+      console.log('profile: ', this.userSubject.next(user.profile));
+      
       return this.success(state);
     } catch (silentError) {
       // User might not be authenticated, fallback to popup authentication
