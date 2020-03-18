@@ -17,6 +17,10 @@ import { LoginModalComponent } from './account/login-modal/login-modal.component
 import { SchedulerComponent } from './scheduler/scheduler.component';
 import { AppointmentComponent } from './appointment/appointment.component';
 import { ScheduledModalComponent } from './scheduler/scheduled-modal/scheduled-modal.component';
+import { ApiAuthorizationModule } from '../api-authorization/api-authorization.module';
+import { AuthorizeInterceptor } from '../api-authorization/authorize.interceptor';
+import { AuthorizeGuard } from 'src/api-authorization/authorize.guard';
+import { LoginComponent } from './account/login.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +31,8 @@ import { ScheduledModalComponent } from './scheduler/scheduled-modal/scheduled-m
     AppointmentComponent,
     RegisterModalComponent,
     LoginModalComponent,
-    ScheduledModalComponent
+    ScheduledModalComponent,
+    LoginComponent
   ],
   entryComponents: [
     RegisterModalComponent,
@@ -35,7 +40,7 @@ import { ScheduledModalComponent } from './scheduler/scheduled-modal/scheduled-m
     ScheduledModalComponent
   ],
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
@@ -45,13 +50,17 @@ import { ScheduledModalComponent } from './scheduler/scheduled-modal/scheduled-m
       provide: DateAdapter,
       useFactory: adapterFactory
     }),
+    ApiAuthorizationModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'scheduler', component: SchedulerComponent },
-      { path: 'appointment', component: AppointmentComponent }
+      { path: 'account/login', component: LoginComponent },
+      { path: 'scheduler', component: SchedulerComponent, canActivate: [AuthorizeGuard] },
+      { path: 'appointment', component: AppointmentComponent, canActivate: [AuthorizeGuard] }
     ])
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

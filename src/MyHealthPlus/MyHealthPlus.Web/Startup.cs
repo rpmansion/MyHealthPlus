@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -43,6 +44,12 @@ namespace MyHealthPlus.Web
                 .AddRoleStore<RoleStore>()
                 .AddDefaultTokenProviders();
 
+            services.AddIdentityServer()
+                .AddApiAuthorization<Account, AppDbContext>();
+
+            services.AddAuthentication()
+                .AddIdentityServerJwt();
+
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(opts =>
                 {
@@ -50,6 +57,7 @@ namespace MyHealthPlus.Web
                     opts.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 });
 
+            services.AddRazorPages();
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
@@ -77,12 +85,15 @@ namespace MyHealthPlus.Web
             }
 
             app.UseRouting();
-
+            app.UseAuthentication();
+            app.UseIdentityServer();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
 
             app.UseSpa(spa =>

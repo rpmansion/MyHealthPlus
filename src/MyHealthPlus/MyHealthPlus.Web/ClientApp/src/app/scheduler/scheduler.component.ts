@@ -12,6 +12,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { RegisterModalComponent } from '../account/register-modal/register-modal.component';
 import { ScheduledModalComponent } from './scheduled-modal/scheduled-modal.component';
+import { AuthorizeService } from 'src/api-authorization/authorize.service';
+import { map } from 'rxjs/operators';
 
 const colors: any = {
   red: {
@@ -44,9 +46,13 @@ export class SchedulerComponent implements OnInit {
 
   events: CalendarEvent[] = [];
 
+  isAuthenticated: Observable<boolean>;
+  userName: Observable<string>;
+
   constructor(private modal: NgbModal,
     private http: HttpClient,
     private formBuilder: FormBuilder,
+    private authorizeService: AuthorizeService,
     @Inject('BASE_URL') private baseUrl: string) { }
 
   ngOnInit() {
@@ -63,6 +69,9 @@ export class SchedulerComponent implements OnInit {
         });
       }
     );
+
+    this.isAuthenticated = this.authorizeService.isAuthenticated();
+    this.userName = this.authorizeService.getUser().pipe(map(u => u && u.name));
   }
 
   private createForm() {
