@@ -38,6 +38,8 @@ export class LogoutComponent implements OnInit {
         break;
       case LogoutActions.LoggedOut:
         this.message.next('You successfully logged out!');
+        // force to redirect to base url
+        this.router.navigate(['/']);
         break;
       default:
         throw new Error(`Invalid action '${action}'`);
@@ -65,6 +67,7 @@ export class LogoutComponent implements OnInit {
       }
     } else {
       this.message.next('You successfully logged out!');
+      console.log('log me out please');
     }
   }
 

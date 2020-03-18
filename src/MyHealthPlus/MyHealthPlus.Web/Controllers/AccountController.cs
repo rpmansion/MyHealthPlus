@@ -29,25 +29,6 @@ namespace MyHealthPlus.Web.Controllers
             _signInManager = signInManager;
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> LoginAsync([FromBody]LoginModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var result = _signInManager.PasswordSignInAsync(model.Username, model.Password, false, false);
-
-            //if (!result.Succeeded)
-            //{
-            //    // TODO : Log error
-            //    return BadRequest(result.Errors.First().Description);
-            //}
-
-            return Ok();
-        }
-
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody]RegisterModel model)
         {

@@ -6,12 +6,12 @@ namespace MyHealthPlus.Web.Controllers
 {
     public class OidcConfigurationController : Controller
     {
-        private readonly ILogger<OidcConfigurationController> logger;
+        private readonly ILogger<OidcConfigurationController> _logger;
 
         public OidcConfigurationController(IClientRequestParametersProvider clientRequestParametersProvider, ILogger<OidcConfigurationController> _logger)
         {
             ClientRequestParametersProvider = clientRequestParametersProvider;
-            logger = _logger;
+            _logger = _logger;
         }
 
         public IClientRequestParametersProvider ClientRequestParametersProvider { get; }

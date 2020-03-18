@@ -13,14 +13,12 @@ import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
 import { RegisterModalComponent } from './account/register-modal/register-modal.component';
-import { LoginModalComponent } from './account/login-modal/login-modal.component';
 import { SchedulerComponent } from './scheduler/scheduler.component';
 import { AppointmentComponent } from './appointment/appointment.component';
 import { ScheduledModalComponent } from './scheduler/scheduled-modal/scheduled-modal.component';
 import { ApiAuthorizationModule } from '../api-authorization/api-authorization.module';
 import { AuthorizeInterceptor } from '../api-authorization/authorize.interceptor';
 import { AuthorizeGuard } from 'src/api-authorization/authorize.guard';
-import { LoginComponent } from './account/login.component';
 
 @NgModule({
   declarations: [
@@ -30,13 +28,10 @@ import { LoginComponent } from './account/login.component';
     SchedulerComponent,
     AppointmentComponent,
     RegisterModalComponent,
-    LoginModalComponent,
-    ScheduledModalComponent,
-    LoginComponent
+    ScheduledModalComponent
   ],
   entryComponents: [
     RegisterModalComponent,
-    LoginModalComponent,
     ScheduledModalComponent
   ],
   imports: [
@@ -53,7 +48,6 @@ import { LoginComponent } from './account/login.component';
     ApiAuthorizationModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'account/login', component: LoginComponent },
       { path: 'scheduler', component: SchedulerComponent, canActivate: [AuthorizeGuard] },
       { path: 'appointment', component: AppointmentComponent, canActivate: [AuthorizeGuard] }
     ])
