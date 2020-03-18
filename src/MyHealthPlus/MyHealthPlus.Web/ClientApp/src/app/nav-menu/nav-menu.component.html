@@ -18,7 +18,7 @@
         </ul>
         <ul class="navbar-nav" *ngIf="!(isAuthenticated | async)">
           <li class="nav-item" [routerLinkActive]="['link-active']" [routerLinkActiveOptions]="{ exact: true }">
-            <a class="nav-link text-dark" [routerLink]="['/']">Home</a>
+            <a class="nav-link text-dark" [routerLink]='["/"]'>Home</a>
           </li>
         </ul>
       </div>

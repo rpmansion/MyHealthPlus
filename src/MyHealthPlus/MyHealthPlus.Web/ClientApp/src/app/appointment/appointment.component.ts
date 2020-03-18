@@ -21,6 +21,8 @@ import {
 } from 'date-fns';
 import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { AuthorizeService } from 'src/api-authorization/authorize.service';
+import { map } from 'rxjs/operators';
 
 const colors: any = {
   red: {
@@ -62,7 +64,11 @@ export class AppointmentComponent implements OnInit {
     }
   ];
 
+  isAuthenticated: Observable<boolean>;
+  userName: Observable<string>;
+
   constructor(private http: HttpClient,
+    private authorizeService: AuthorizeService,
     @Inject('BASE_URL') private baseUrl: string) { }
 
   ngOnInit() {
@@ -80,6 +86,9 @@ export class AppointmentComponent implements OnInit {
         });
       }
     );
+
+    this.isAuthenticated = this.authorizeService.isAuthenticated();
+    this.userName = this.authorizeService.getUser().pipe(map(u => u && u.name));
   }
 
   getStartHour(date: any, time: any) {
