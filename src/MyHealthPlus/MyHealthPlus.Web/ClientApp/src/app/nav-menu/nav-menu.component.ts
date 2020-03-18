@@ -1,16 +1,22 @@
-import { Component } from '@angular/core';
-import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
-import { LoginModalComponent } from '../account/login-modal/login-modal.component';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { AuthorizeService } from 'src/api-authorization/authorize.service';
 
 @Component({
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',
   styleUrls: ['./nav-menu.component.scss']
 })
-export class NavMenuComponent {
+export class NavMenuComponent implements OnInit {
   isExpanded = false;
   closeResult: string;
-  constructor(private modalService: NgbModal) {}
+  isAuthenticated: Observable<boolean>;
+
+  constructor(private authorizeService: AuthorizeService) { }
+
+  ngOnInit() {
+    this.isAuthenticated = this.authorizeService.isAuthenticated();
+  }
 
   collapse() {
     this.isExpanded = false;
@@ -18,15 +24,5 @@ export class NavMenuComponent {
 
   toggle() {
     this.isExpanded = !this.isExpanded;
-  }
-
-  openLoginModel() {
-    const modalRef = this.modalService.open(LoginModalComponent);
-
-    modalRef.result.then((result) => {
-      console.log(result);
-    }).catch((error) => {
-      console.log(error);
-    });
   }
 }

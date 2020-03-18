@@ -1,14 +1,34 @@
-import { Component, OnInit, ChangeDetectionStrategy, ViewEncapsulation, Inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ViewEncapsulation, Inject, TemplateRef, ViewChild } from '@angular/core';
 
 import {
   CalendarEvent,
-  CalendarMonthViewBeforeRenderEvent,
-  CalendarView
+  CalendarView,
+  CalendarEventAction
 } from 'angular-calendar';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { format, addHours, startOfDay } from 'date-fns';
+import { Observable, Subject } from 'rxjs';
+import { format, addHours, startOfDay, subDays, addDays, endOfMonth, isSameMonth, isSameDay } from 'date-fns';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { RegisterModalComponent } from '../account/register-modal/register-modal.component';
+import { ScheduledModalComponent } from './scheduled-modal/scheduled-modal.component';
+import { AuthorizeService } from 'src/api-authorization/authorize.service';
+import { map } from 'rxjs/operators';
+
+const colors: any = {
+  red: {
+    primary: '#ad2121',
+    secondary: '#FAE3E3'
+  },
+  blue: {
+    primary: '#1e90ff',
+    secondary: '#D1E8FF'
+  },
+  yellow: {
+    primary: '#e3bc08',
+    secondary: '#FDF1BA'
+  }
+};
 
 @Component({
   selector: 'app-scheduler',
@@ -18,52 +38,72 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./scheduler.component.scss']
 })
 export class SchedulerComponent implements OnInit {
-  view: CalendarView = CalendarView.Month;
-  viewDate: Date = new Date();
-  events: CalendarEvent[] = [];
-
   form: FormGroup;
 
-  constructor(private http: HttpClient,
+  view: CalendarView = CalendarView.Month;
+  viewDate: Date = new Date();
+  refresh: Subject<any> = new Subject();
+
+  events: CalendarEvent[] = [];
+
+  isAuthenticated: Observable<boolean>;
+  userName: Observable<string>;
+
+  constructor(private modal: NgbModal,
+    private http: HttpClient,
     private formBuilder: FormBuilder,
+    private authorizeService: AuthorizeService,
     @Inject('BASE_URL') private baseUrl: string) { }
 
-    ngOnInit() {
-      this.createForm();
-    }
+  ngOnInit() {
+    this.createForm();
+    this.getPatientAppointments(1).subscribe(
+      response => {
+        response.forEach((item: any) => {
+          this.events.push({
+            start: this.getStartHour(item.date, item.time),
+            title: '',
+            color: colors.red
+          });
+          this.refresh.next();
+        });
+      }
+    );
 
-    private createForm() {
-      this.form = this.formBuilder.group({
-        checkupType: '',
-        appointmentDate: '',
-        appointmentTime: '',
-        note: ''
-      });
-    }
+    this.isAuthenticated = this.authorizeService.isAuthenticated();
+    this.userName = this.authorizeService.getUser().pipe(map(u => u && u.name));
+  }
+
+  private createForm() {
+    this.form = this.formBuilder.group({
+      checkupType: '',
+      appointmentDate: '',
+      appointmentTime: '',
+      note: ''
+    });
+  }
+
+  getStartHour(date: any, time: any) {
+    const day = startOfDay(new Date(date));
+    const hour = new Date(time).getUTCHours();
+
+    return addHours(day, hour);
+  }
 
   getListOfTime() {
-    const times: {id: string, name: string}[] = [];
+    const times: { id: string, name: string }[] = [];
     for (let index = 8; index < 18; index++) {
       const name = format(addHours(startOfDay(new Date()), index), 'hh:mm a');
-      times.push({id: index.toString(), name: name });
+      times.push({ id: index.toString(), name: name });
     }
     return times;
   }
 
   getCheckupType() {
     return [
-      {id: '1', name: 'General' },
-      {id: '2', name: 'Skin Cancer'}
+      { id: '1', name: 'General' },
+      { id: '2', name: 'Skin Cancer' }
     ];
-  }
-
-  beforeMonthViewRender(renderEvent: CalendarMonthViewBeforeRenderEvent): void {
-    renderEvent.body.forEach(day => {
-      const dayOfMonth = day.date.getDate();
-      if (dayOfMonth > 5 && dayOfMonth < 10 && day.inMonth) {
-        day.cssClass = 'bg-pink';
-      }
-    });
   }
 
   handleFormSubmit(data: any) {
@@ -74,12 +114,24 @@ export class SchedulerComponent implements OnInit {
     );
   }
 
-  // TODO : move this to service
-  createAppointment(data: any): Observable<any> {
-    const headerOptions = new HttpHeaders();
-    headerOptions.set('Content-Type', 'application/json');
-    return this.http.post<any>(`${this.baseUrl}api/appointment/create`, data);
-    // return this.http.post<any>(`${this.baseUrl}api/appointment/create`, data)
+  dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
+    if (events.length) {
+      events.forEach(item => {
+        item.title = 'Scheduled';
+      });
+      const modalRef = this.modal.open(ScheduledModalComponent);
+      modalRef.componentInstance.viewDate = date;
+      modalRef.componentInstance.modalData = events;
+    }
   }
 
+  // TODO : move this to service
+  getPatientAppointments(data: any): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}api/appointment/patients`);
+  }
+
+  // TODO : move this to service
+  createAppointment(data: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}api/appointment/create`, data);
+  }
 }

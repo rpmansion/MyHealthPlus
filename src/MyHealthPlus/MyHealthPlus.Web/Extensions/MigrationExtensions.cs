@@ -8,6 +8,9 @@ using MyHealthPlus.Data.Models;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using IdentityModel;
 
 namespace MyHealthPlus.Web.Extensions
 {
@@ -18,9 +21,9 @@ namespace MyHealthPlus.Web.Extensions
             using (var scope = host.Services.CreateScope())
             {
                 CreateMigration(scope);
-                CreateRoles(scope);
+                CreateRolesAsync(scope);
                 CreateAccountsAsync(scope);
-                CreateAppointments(scope);
+                CreateAppointmentsAsync(scope);
             }
 
             return host;
@@ -40,35 +43,34 @@ namespace MyHealthPlus.Web.Extensions
             }
         }
 
-        private static void CreateRoles(IServiceScope scope)
+        private static void CreateRolesAsync(IServiceScope scope)
         {
-            using (var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>())
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
+
+            var roles = new[]
             {
-                var roles = new[]
-                {
-                    new {Role = "Patient", Description = "Standard user."},
-                    new {Role = "Doctor", Description = ""},
-                    new {Role = "Admin", Description = ""}
-                };
+                new {Role = "Patient", Description = "Hospital patient"},
+                new {Role = "Doctor", Description = "Hospital doctor"},
+                new {Role = "Staff", Description = "Hospital staff (e.g. administrative)"}
+            };
 
-                foreach (var role in roles)
-                {
-                    var r = roleManager.FindByNameAsync(role.Role).Result;
+            foreach (var role in roles)
+            {
+                var r = roleManager.FindByNameAsync(role.Role).Result;
 
-                    if (r == null)
+                if (r == null)
+                {
+                    var newRole = new Role
                     {
-                        var newRole = new Role
-                        {
-                            Name = role.Role,
-                            Description = role.Description
-                        };
+                        Name = role.Role,
+                        Description = role.Description
+                    };
 
-                        var result = roleManager.CreateAsync(newRole).Result;
+                    var result = roleManager.CreateAsync(newRole).Result;
 
-                        if (!result.Succeeded)
-                        {
-                            throw new Exception(result.Errors.First().Description);
-                        }
+                    if (!result.Succeeded)
+                    {
+                        throw new Exception(result.Errors.First().Description);
                     }
                 }
             }
@@ -79,11 +81,39 @@ namespace MyHealthPlus.Web.Extensions
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Account>>();
             var accounts = new[]
             {
-                    new {UserName = "JohnDoe", Role = "Patient"},
-                    new {UserName = "JaneDoe", Role = "Patient" },
-                    new {UserName = "MarkStephenson", Role = "Doctor" },
-                    new {UserName = "AdminTeam", Role = "Admin"}
-                };
+                new
+                {
+                    UserName = "johndoe@email.com",
+                    Role = "Patient",
+                    FirstName = "John",
+                    LastName = "Doe",
+                    Contact = "504-621-8927"
+                },
+                new
+                {
+                    UserName = "janedoe@email.com", 
+                    Role = "Patient",
+                    FirstName = "Jane",
+                    LastName = "Doe",
+                    Contact = "504-621-8637"
+                },
+                new
+                {
+                    UserName = "markstephenson@email.com",
+                    Role = "Doctor",
+                    FirstName = "Mark",
+                    LastName = "Stephenson",
+                    Contact = "504-323-8103"
+                },
+                new
+                {
+                    UserName = "merissaperin@email.com", 
+                    Role = "Staff",
+                    FirstName = "Merissa",
+                    LastName = "Perin",
+                    Contact = "324-313-4675"
+                }
+            };
 
             foreach (var account in accounts)
             {
@@ -103,17 +133,19 @@ namespace MyHealthPlus.Web.Extensions
                         throw new Exception(result.Errors.First().Description);
                     }
 
-                    //result = userManager.AddClaimsAsync(newAcct, new Claim[]{
-                    //    new Claim(JwtClaimTypes.Name, "Alice Smith"),
-                    //    new Claim(JwtClaimTypes.GivenName, "Alice"),
-                    //    new Claim(JwtClaimTypes.FamilyName, "Smith"),
-                    //    new Claim(JwtClaimTypes.Email, "AliceSmith@email.com")
-                    //}).Result;
+                    result = userManager.AddClaimsAsync(newAcct, new Claim[]{
+                        new Claim(JwtClaimTypes.Name, $"{account.FirstName} {account.LastName}"),
+                        new Claim(JwtClaimTypes.GivenName, account.FirstName),
+                        new Claim(JwtClaimTypes.FamilyName, account.LastName),
+                        new Claim(JwtClaimTypes.Email, account.UserName),
+                        new Claim(JwtClaimTypes.Role, account.Role),
+                        new Claim(JwtClaimTypes.PhoneNumber, account.Contact) 
+                    }).Result;
 
-                    //if (!result.Succeeded)
-                    //{
-                    //    throw new Exception(result.Errors.First().Description);
-                    //}
+                    if (!result.Succeeded)
+                    {
+                        throw new Exception(result.Errors.First().Description);
+                    }
 
                     var addRoleResult = userManager.AddToRoleAsync(newAcct, account.Role).Result;
 
@@ -127,38 +159,40 @@ namespace MyHealthPlus.Web.Extensions
             }
         }
 
-        private static void CreateAppointments(IServiceScope scope)
+        private static void CreateAppointmentsAsync(IServiceScope scope)
         {
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Account>>();
 
-            using (var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Account>>())
+            var accounts = userManager.GetUsersInRoleAsync("Patient").Result;
+
+            if (accounts != null && accounts.Any())
             {
-                var accounts = userManager.GetUsersInRoleAsync("Patient").Result;
-
-                if (accounts != null && accounts.Any())
+                foreach (var account in accounts)
                 {
-                    foreach (var account in accounts)
+                    var exist = context.Appointments
+                        .FirstOrDefaultAsync(x => x.Account == account
+                               && x.Date.Date == DateTime.UtcNow.Date).Result;
+
+                    var hoursCounter = 8;
+
+                    if (exist == null)
                     {
-                        var exist = context.Appointments
-                            .FirstOrDefaultAsync(x => x.Account == account
-                                   && x.Date.Date == DateTime.Now.Date);
-
-                        var hoursCounter = 8;
-                        
-                        if (exist == null)
+                        var appointment = new Appointment
                         {
-                            var appointment = new Appointment
-                            {
-                                CheckupType = CheckupType.General,
-                                Date = DateTime.Now,
-                                Time = DateTime.Now.AddHours(hoursCounter++),
-                                Account = account
-                            };
+                            CheckupType = CheckupType.General,
+                            Date = DateTime.UtcNow,
+                            Time = DateTime.UtcNow.AddHours(hoursCounter),
+                            Status = AppointmentStatus.Pending,
+                            Note = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                            Account = account
+                        };
 
-                            context.Appointments.Add(appointment);
-                            context.SaveChangesAsync();
-                        }
+                        context.Appointments.Add(appointment);
+                        context.SaveChangesAsync();
                     }
+
+                    hoursCounter++;
                 }
             }
         }

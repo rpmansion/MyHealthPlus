@@ -9,7 +9,8 @@
         <h5 class="card-title">Today's Appointment</h5>
         <mwl-calendar-day-view [viewDate]="viewDate"
           [dayStartHour]="8" [dayEndHour]="17"
-          [events]="events" (beforeViewRender)="beforeDayViewRender($event)">
+          [refresh]="refresh"
+          [events]="events">
         </mwl-calendar-day-view>
       </div>
     </div>

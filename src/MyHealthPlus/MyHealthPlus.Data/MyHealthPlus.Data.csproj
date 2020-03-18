@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="IdentityServer4.EntityFramework.Storage" Version="3.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.2">
@@ -22,6 +23,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MyHealthPlus.Core\MyHealthPlus.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <PackageReference Include="IdentityServer4.EntityFramework">
+      <Version>3.1.2</Version>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

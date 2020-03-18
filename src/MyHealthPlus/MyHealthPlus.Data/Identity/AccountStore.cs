@@ -6,13 +6,15 @@ using MyHealthPlus.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace MyHealthPlus.Data.Identity
 {
     public class AccountStore : Disposable, IUserStore<Account>,
-        IUserPasswordStore<Account>, IUserSecurityStampStore<Account>, IUserRoleStore<Account>
+        IUserClaimStore<Account>, IUserPasswordStore<Account>,
+        IUserSecurityStampStore<Account>, IUserRoleStore<Account>
     {
         private readonly AppDbContext _context;
 
@@ -380,5 +382,125 @@ namespace MyHealthPlus.Data.Identity
         }
 
         #endregion IUserRoleStore
+
+        #region IUserClaimStore
+
+        public async Task<IList<Claim>> GetClaimsAsync(Account account, CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (account == null)
+            {
+                throw new ArgumentNullException(nameof(account));
+            }
+
+            return await _context.AccountClaims
+                .Where(x => x.Account.Id.Equals(account.Id))
+                .Select(y => y.ToClaim())
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task AddClaimsAsync(Account account, IEnumerable<Claim> claims, CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (account == null)
+            {
+                throw new ArgumentNullException(nameof(account));
+            }
+
+            if (claims == null)
+            {
+                throw new ArgumentNullException(nameof(claims));
+            }
+
+            foreach (var claim in claims)
+            {
+                _context.AccountClaims.Add(new AccountClaim
+                {
+                    Account = account,
+                    Type = claim.Type,
+                    Value = claim.Value
+                });
+            }
+
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task ReplaceClaimAsync(Account account, Claim claim, Claim newClaim, CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (account == null)
+            {
+                throw new ArgumentNullException(nameof(account));
+            }
+            if (claim == null)
+            {
+                throw new ArgumentNullException(nameof(claim));
+            }
+            if (newClaim == null)
+            {
+                throw new ArgumentNullException(nameof(newClaim));
+            }
+
+            var matches = await _context.AccountClaims
+                .Where(x => x.Account == account
+                            && x.Type == claim.Type && x.Value == claim.Value)
+                .ToListAsync(cancellationToken);
+
+            foreach (var match in matches)
+            {
+                match.Type = newClaim.Type;
+                match.Value = newClaim.Value;
+            }
+        }
+
+        public async Task RemoveClaimsAsync(Account account, IEnumerable<Claim> claims, CancellationToken cancellationToken)
+        {
+            ThrowIfDisposed();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (account == null)
+            {
+                throw new ArgumentNullException(nameof(account));
+            }
+
+            if (claims == null)
+            {
+                throw new ArgumentNullException(nameof(claims));
+            }
+
+            var matches = new List<AccountClaim>();
+
+            foreach (var claim in claims)
+            {
+                matches = await _context.AccountClaims
+                    .Where(x => x.Account == account && x.Type == claim.Type && x.Value == claim.Value)
+                    .ToListAsync(cancellationToken);
+            }
+
+            foreach (var claim in matches)
+            {
+                _context.AccountClaims.Remove(claim);
+            }
+
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public Task<IList<Account>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken)
+        {
+            // NOTE : not need for this time
+
+            ThrowIfDisposed();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            throw new NotImplementedException();
+        }
+
+        #endregion IUserClaimStore
     }
 }

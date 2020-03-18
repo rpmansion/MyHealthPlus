@@ -27,10 +27,11 @@ export class RegisterModalComponent implements OnInit {
     this.form = this.formBuilder.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      birthDate: ['', Validators.required],
-      email: ['', Validators.required],
-      middleName: '',
-      contact: ''
+      birthDate: [''],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+      confirmPassword: [''],
+      middleName: ['']
     });
   }
 

@@ -24,6 +24,40 @@ namespace MyHealthPlus.Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DeviceCodes",
+                columns: table => new
+                {
+                    UserCode = table.Column<string>(maxLength: 200, nullable: false),
+                    DeviceCode = table.Column<string>(maxLength: 200, nullable: false),
+                    SubjectId = table.Column<string>(maxLength: 200, nullable: true),
+                    ClientId = table.Column<string>(maxLength: 200, nullable: false),
+                    CreationTime = table.Column<DateTime>(nullable: false),
+                    Expiration = table.Column<DateTime>(nullable: false),
+                    Data = table.Column<string>(maxLength: 50000, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DeviceCodes", x => x.UserCode);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PersistedGrants",
+                columns: table => new
+                {
+                    Key = table.Column<string>(maxLength: 200, nullable: false),
+                    Type = table.Column<string>(maxLength: 50, nullable: false),
+                    SubjectId = table.Column<string>(maxLength: 200, nullable: true),
+                    ClientId = table.Column<string>(maxLength: 200, nullable: false),
+                    CreationTime = table.Column<DateTime>(nullable: false),
+                    Expiration = table.Column<DateTime>(nullable: true),
+                    Data = table.Column<string>(maxLength: 50000, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PersistedGrants", x => x.Key);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Role",
                 columns: table => new
                 {
@@ -39,24 +73,20 @@ namespace MyHealthPlus.Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AccountProfile",
+                name: "AccountClaim",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(nullable: false),
-                    LastName = table.Column<string>(nullable: false),
-                    MiddleName = table.Column<string>(nullable: true),
-                    BirthDate = table.Column<DateTime>(nullable: false),
-                    Contact = table.Column<string>(nullable: true),
-                    SexType = table.Column<int>(nullable: false),
-                    AccountId = table.Column<int>(nullable: true)
+                    AccountId = table.Column<int>(nullable: true),
+                    Type = table.Column<string>(nullable: false),
+                    Value = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AccountProfile", x => x.Id);
+                    table.PrimaryKey("PK_AccountClaim", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AccountProfile_Account_AccountId",
+                        name: "FK_AccountClaim_Account_AccountId",
                         column: x => x.AccountId,
                         principalTable: "Account",
                         principalColumn: "Id",
@@ -71,6 +101,7 @@ namespace MyHealthPlus.Web.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AccountId = table.Column<int>(nullable: true),
                     CheckupType = table.Column<int>(nullable: false),
+                    Status = table.Column<int>(nullable: false),
                     Date = table.Column<DateTime>(nullable: false),
                     Time = table.Column<DateTime>(nullable: false),
                     Note = table.Column<string>(nullable: true)
@@ -129,14 +160,35 @@ namespace MyHealthPlus.Web.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AccountProfile_AccountId",
-                table: "AccountProfile",
+                name: "IX_AccountClaim_AccountId",
+                table: "AccountClaim",
                 column: "AccountId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Appointment_AccountId",
                 table: "Appointment",
                 column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DeviceCodes_DeviceCode",
+                table: "DeviceCodes",
+                column: "DeviceCode",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DeviceCodes_Expiration",
+                table: "DeviceCodes",
+                column: "Expiration");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersistedGrants_Expiration",
+                table: "PersistedGrants",
+                column: "Expiration");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersistedGrants_SubjectId_ClientId_Type",
+                table: "PersistedGrants",
+                columns: new[] { "SubjectId", "ClientId", "Type" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -145,10 +197,16 @@ namespace MyHealthPlus.Web.Migrations
                 name: "Account2Role");
 
             migrationBuilder.DropTable(
-                name: "AccountProfile");
+                name: "AccountClaim");
 
             migrationBuilder.DropTable(
                 name: "Appointment");
+
+            migrationBuilder.DropTable(
+                name: "DeviceCodes");
+
+            migrationBuilder.DropTable(
+                name: "PersistedGrants");
 
             migrationBuilder.DropTable(
                 name: "Role");

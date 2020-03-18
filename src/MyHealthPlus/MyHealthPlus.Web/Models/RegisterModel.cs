@@ -15,6 +15,10 @@ namespace MyHealthPlus.Web.Models
         [Required]
         public string Email { get; set; }
 
+        public string Password { get; set; }
+
+        public string ComparePassword { get; set; }
+
         public string Contact { get; set; }
     }
 }
