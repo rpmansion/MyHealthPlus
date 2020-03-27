@@ -3,7 +3,6 @@ using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity;
 using MyHealthPlus.Data.Models;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,14 +25,16 @@ namespace MyHealthPlus.Web.Services
         {
             var sub = context.Subject.GetSubjectId();
             var user = await _accountManager.FindByIdAsync(sub);
+
             var principal = await _claimsFactory.CreateAsync(user);
+            var userClaims = await _accountManager.GetClaimsAsync(user);
 
-            var claims = principal.Claims.ToList();
-            claims = claims.Where(claim => context.RequestedClaimTypes.Contains(claim.Type)).ToList();
+            var claims = principal.Claims
+                // No need to include the AspNet.Identity claims (e.g. security stamp)
+                .Where(x => !x.Type.Contains("AspNet.Identity"))
+                .ToList();
 
-            // Add custom claims in token here based on user properties or any other source
-
-            context.IssuedClaims = claims;
+            context.IssuedClaims = claims.Union(userClaims).ToList();
         }
 
         public async Task IsActiveAsync(IsActiveContext context)

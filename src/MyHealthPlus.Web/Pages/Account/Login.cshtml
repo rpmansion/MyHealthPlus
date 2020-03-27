@@ -18,7 +18,8 @@
         margin: auto;
     }
 
-        .form-signin h1 {
+        .form-signin h1,
+        .form-signin p {
             text-align: center;
         }
 
@@ -75,6 +76,16 @@
         </div>
         <div class="form-group">
             <button type="submit" class="btn btn-primary btn-block">Log in</button>
+        </div>
+        <div class="form-group">
+            <p>
+                <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+            </p>
+            <p>
+                Don't have an account? 
+                <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register
+                </a>
+            </p>
         </div>
     </form>
 </section>

@@ -21,7 +21,7 @@ import {
 } from 'date-fns';
 import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { AuthorizeService } from 'src/api-authorization/authorize.service';
+import { AuthorizeService } from 'src/app/auth/authorize.service';
 import { map } from 'rxjs/operators';
 
 const colors: any = {

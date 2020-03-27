@@ -12,13 +12,12 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
-import { RegisterModalComponent } from './account/register-modal/register-modal.component';
 import { SchedulerComponent } from './scheduler/scheduler.component';
 import { AppointmentComponent } from './appointment/appointment.component';
 import { ScheduledModalComponent } from './scheduler/scheduled-modal/scheduled-modal.component';
-import { ApiAuthorizationModule } from '../api-authorization/api-authorization.module';
-import { AuthorizeInterceptor } from '../api-authorization/authorize.interceptor';
-import { AuthorizeGuard } from 'src/api-authorization/authorize.guard';
+import { ApiAuthorizationModule } from './auth/api-authorization.module';
+import { AuthorizeInterceptor } from './auth/authorize.interceptor';
+import { AuthorizeGuard } from 'src/app/auth/authorize.guard';
 
 @NgModule({
   declarations: [
@@ -27,11 +26,9 @@ import { AuthorizeGuard } from 'src/api-authorization/authorize.guard';
     HomeComponent,
     SchedulerComponent,
     AppointmentComponent,
-    RegisterModalComponent,
     ScheduledModalComponent
   ],
   entryComponents: [
-    RegisterModalComponent,
     ScheduledModalComponent
   ],
   imports: [

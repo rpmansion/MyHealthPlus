@@ -10,9 +10,8 @@ import { Observable, Subject } from 'rxjs';
 import { format, addHours, startOfDay, subDays, addDays, endOfMonth, isSameMonth, isSameDay } from 'date-fns';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { RegisterModalComponent } from '../account/register-modal/register-modal.component';
 import { ScheduledModalComponent } from './scheduled-modal/scheduled-modal.component';
-import { AuthorizeService } from 'src/api-authorization/authorize.service';
+import { AuthorizeService } from 'src/app/auth/authorize.service';
 import { map } from 'rxjs/operators';
 
 const colors: any = {

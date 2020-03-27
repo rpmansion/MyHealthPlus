@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AuthorizeService } from 'src/api-authorization/authorize.service';
+import { AuthorizeService } from 'src/app/auth/authorize.service';
 
 @Component({
   selector: 'app-nav-menu',
@@ -16,7 +16,9 @@ export class NavMenuComponent implements OnInit {
 
   ngOnInit() {
     this.isAuthenticated = this.authorizeService.isAuthenticated();
-    // console.log(this.authorizeService);
+    // this.authorizeService.getUser().subscribe(
+    //   response => console.log(response.role)
+    // );
   }
 
   collapse() {
