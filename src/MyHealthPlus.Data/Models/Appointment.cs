@@ -7,14 +7,14 @@ namespace MyHealthPlus.Data.Models
     {
         public virtual Account Account { get; set; }
 
-        public CheckupType CheckupType { get; set; }
+        public virtual CheckupType CheckupType { get; set; }
 
-        public AppointmentStatus Status { get; set; }
+        public virtual AppointmentStatus Status { get; set; }
 
-        public DateTime Date { get; set; }
+        public virtual DateTime Date { get; set; }
 
-        public DateTime Time { get; set; }
+        public virtual DateTime Time { get; set; }
 
-        public string Note { get; set; }
+        public virtual string Note { get; set; }
     }
 }

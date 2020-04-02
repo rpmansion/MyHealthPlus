@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -66,6 +67,7 @@ namespace MyHealthPlus.Web
                 configuration.RootPath = "ClientApp/dist";
             });
 
+            services.AddScoped<IEmailSender, EmailService>();
             services.AddScoped<IProfileService, ProfileService>();
         }
 

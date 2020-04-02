@@ -16,6 +16,7 @@ namespace MyHealthPlus.Data.Mapping
 
             builder.Property(x => x.Date)
                 .IsRequired();
+
         }
     }
 }

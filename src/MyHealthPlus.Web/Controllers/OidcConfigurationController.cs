@@ -20,6 +20,7 @@ namespace MyHealthPlus.Web.Controllers
         public IActionResult GetClientRequestParameters([FromRoute]string clientId)
         {
             var parameters = ClientRequestParametersProvider.GetClientParameters(HttpContext, clientId);
+
             return Ok(parameters);
         }
     }

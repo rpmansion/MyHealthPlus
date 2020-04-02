@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace MyHealthPlus.Web.Extensions
 {
-    public static class MigrationExtensions
+    public static class HostExtensions
     {
         public static IHost MigrateDatabase(this IHost host)
         {

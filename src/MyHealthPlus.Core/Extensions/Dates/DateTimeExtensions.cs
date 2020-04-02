@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MyHealthPlus.Core.Extensions
+namespace MyHealthPlus.Core.Extensions.Dates
 {
     public static class DateTimeExtensions
     {

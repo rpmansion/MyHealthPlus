@@ -19,7 +19,7 @@ namespace MyHealthPlus.Core.Extensions.Dates
         {
             if (start > end)
             {
-                throw new ArgumentOutOfRangeException($"{nameof(start)} is greater then {nameof(end)}");
+                throw new ArgumentOutOfRangeException($"{nameof(start)} is greater than {nameof(end)}");
             }
 
             Start = start;

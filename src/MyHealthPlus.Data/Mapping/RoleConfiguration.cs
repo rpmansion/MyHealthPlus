@@ -11,10 +11,16 @@ namespace MyHealthPlus.Data.Mapping
             builder.ToTable(nameof(Role))
                 .HasKey(x => x.Id);
 
+            builder.HasIndex(x => x.NormalizedName);
+
             builder.Property(x => x.Id)
                 .IsRequired();
 
             builder.Property(x => x.Name)
+                .IsRequired();
+
+            builder.Property(x => x.ConcurrencyStamp)
+                .IsConcurrencyToken()
                 .IsRequired();
         }
     }

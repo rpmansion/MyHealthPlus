@@ -279,7 +279,7 @@ namespace MyHealthPlus.Data.Identity
                 throw new InvalidOperationException($"Account is already a {roleName}");
             }
 
-            var role = await _context.Roles.SingleOrDefaultAsync(x => x.NormalizedName == normalizedRole);
+            var role = await _context.Roles.SingleOrDefaultAsync(x => x.NormalizedName == normalizedRole, cancellationToken);
 
             if (role == null)
             {
@@ -306,7 +306,7 @@ namespace MyHealthPlus.Data.Identity
                          join role in _context.Roles on accountRole.Role equals role
                          select role.Name);
 
-            return await query.ToListAsync();
+            return await query.ToListAsync(cancellationToken);
         }
 
         public async Task<IList<Account>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
@@ -360,16 +360,14 @@ namespace MyHealthPlus.Data.Identity
             }
 
             var role = await _context.Roles.SingleOrDefaultAsync(x =>
-                x.NormalizedName == roleName.ToUpperInvariant()
-            );
+                x.NormalizedName == roleName.ToUpperInvariant(), cancellationToken);
 
             Account2Role accountRole = null;
 
             if (role != null)
             {
                 accountRole = await _context.AccountRoles.FirstOrDefaultAsync(x =>
-                    x.Role == role && x.Account == account
-                );
+                    x.Role == role && x.Account == account, cancellationToken);
             }
 
             if (accountRole != null)
@@ -493,7 +491,7 @@ namespace MyHealthPlus.Data.Identity
 
         public Task<IList<Account>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken)
         {
-            // NOTE : not need for this time
+            // NOTE : no need for this time
 
             ThrowIfDisposed();
             cancellationToken.ThrowIfCancellationRequested();

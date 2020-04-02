@@ -18,12 +18,17 @@ namespace MyHealthPlus.Data.Mapping
                 .IsRequired();
 
             builder.Property(x => x.UserName)
+                .HasMaxLength(255)
                 .IsRequired();
 
             builder.Property(x => x.PasswordHash)
                 .IsRequired();
 
             builder.Property(x => x.SecurityStamp)
+                .IsRequired();
+
+            builder.Property(x => x.ConcurrencyStamp)
+                .IsConcurrencyToken()
                 .IsRequired();
         }
     }

@@ -9,16 +9,16 @@ namespace MyHealthPlus.Data.Models
             AccountRoles = new List<Account2Role>();
         }
 
-        public string UserName { get; set; }
+        public virtual string UserName { get; set; }
 
-        // public string Email { get; set; }
+        public virtual string NormalizedUserName { get; set; }
 
-        public string NormalizedUserName { get; set; }
+        public virtual string PasswordHash { get; set; }
 
-        public string PasswordHash { get; set; }
+        public virtual string SecurityStamp { get; set; }
 
-        public string SecurityStamp { get; set; }
+        public virtual string ConcurrencyStamp { get; set; }
 
-        public ICollection<Account2Role> AccountRoles { get; set; }
+        public virtual ICollection<Account2Role> AccountRoles { get; set; }
     }
 }
